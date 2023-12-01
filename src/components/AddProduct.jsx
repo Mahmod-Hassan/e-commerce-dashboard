@@ -1,5 +1,5 @@
 const AddProduct = () => {
-  return <div className="w-full">add product</div>;
+  return <div>add product</div>;
 };
 
 export default AddProduct;
