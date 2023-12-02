@@ -2,16 +2,20 @@ import { Link } from "react-router-dom";
 
 const LeftSideBar = () => {
   return (
-    <div>
+    <aside>
       <ul className="flex md:flex-col gap-5">
-        <li>
-          <Link to="/">Products</Link>
+        <li className="bg-gray-100 hover:bg-black hover:text-white rounded text-gray-700 p-2 hover:cursor-pointer">
+          <Link className="w-full block" to="/">
+            Products
+          </Link>
         </li>
-        <li>
-          <Link to="/add-product">Add product</Link>
+        <li className="bg-gray-100 hover:bg-black hover:text-white rounded text-gray-700 p-2 hover:cursor-pointer">
+          <Link className="w-full block" to="/add-product">
+            Add product
+          </Link>
         </li>
       </ul>
-    </div>
+    </aside>
   );
 };
 
