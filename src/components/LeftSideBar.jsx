@@ -1,16 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const LeftSideBar = () => {
+  const location = useLocation();
+  const activeClass = "bg-black text-white";
+  const inactiveClass = "bg-gray-100";
   return (
     <aside>
-      <ul className="flex md:flex-col gap-5">
-        <li className="bg-gray-100 hover:bg-black hover:text-white rounded text-gray-700 hover:cursor-pointer">
-          <Link className="w-full h-full p-2 block" to="/">
+      <ul className="flex md:flex-col gap-5 text-center">
+        <li>
+          <Link
+            className={`block px-5 w-full py-2 ${
+              location.pathname === "/" ? activeClass : inactiveClass
+            }`}
+            to="/"
+          >
             Products
           </Link>
         </li>
-        <li className="bg-gray-100 hover:bg-black hover:text-white rounded text-gray-700 hover:cursor-pointer">
-          <Link className="w-full h-full p-2 block" to="/add-product">
+        <li>
+          <Link
+            className={`block px-5 w-full py-2 ${
+              location.pathname === "/add-product" ? activeClass : inactiveClass
+            }`}
+            to="/add-product"
+          >
             Add product
           </Link>
         </li>

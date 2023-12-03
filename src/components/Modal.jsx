@@ -1,9 +1,21 @@
 import { useContext } from "react";
+import toast from "react-hot-toast";
 import { StateContext } from "../context/StateProvider";
 
 const Modal = ({ product }) => {
-  const { modalOpen, setModalOpen } = useContext(StateContext);
-
+  const { setModalOpen } = useContext(StateContext);
+  const deleteProduct = async (productId) => {
+    fetch(`https://fakestoreapi.com/products/${productId}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.title) {
+          setModalOpen(false);
+          toast.success(`successfully delete this ${data.title}`);
+        }
+      });
+  };
   return (
     <div className="flex justify-center items-center fixed z-50 inset-0">
       <div className="border bg-white max-w-md p-5 space-y-6">
@@ -21,7 +33,10 @@ const Modal = ({ product }) => {
           >
             Cancel
           </button>
-          <button className="bg-red-500 text-white px-5 py-2 rounded">
+          <button
+            onClick={() => deleteProduct(product?.id)}
+            className="bg-red-500 text-white px-5 py-2 rounded"
+          >
             Delete
           </button>
         </div>

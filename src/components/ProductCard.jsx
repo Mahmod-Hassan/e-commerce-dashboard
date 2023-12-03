@@ -25,16 +25,23 @@ const ProductCard = ({ product }) => {
   // create a array variable
   // so that I can store star icon based on rating.rate
   const ratingStars = [];
-  for (let i = 0; i < Math.round(rating.rate); i++) {
-    ratingStars.push(<IoIosStar key={i} />);
+  for (let i = 0; i < 5; i++) {
+    const starColor =
+      i < Math.round(rating.rate) ? "text-[#FF9017]" : "text-gray-300";
+    ratingStars.push(<IoIosStar key={i} className={`${starColor}`} />);
   }
   const splitDescription = description.split(" ");
   return (
-    <div className="border rounded flex flex-col">
+    // product main card container
+    <main className="border border-gray-200 rounded flex flex-col">
+      {/* product image container start */}
       <div className="w-full bg-white p-5 rounded">
         <img className="w-[163px] h-[214px] mx-auto" src={image} alt="" />
       </div>
-      <div className="border-t p-5 h-auto bg-gray-200 grow">
+      {/* product image container end */}
+
+      {/* product information container start */}
+      <div className="border-t p-5 h-auto bg-gray-100/25 grow">
         <div className="flex justify-between">
           <p className="text-lg font-semibold">$ {price}</p>
           <button
@@ -47,13 +54,18 @@ const ProductCard = ({ product }) => {
             <FaTrashCanArrowUp />
           </button>
         </div>
-        <p className="text-[#FF9017] flex">{ratingStars}</p>
+        <div className="flex items-center gap-5">
+          <p className="flex">{ratingStars}</p>
+          <span className="text-[#FF9017]">{rating.rate}</span>
+        </div>
+
         <p className="">
           {splitDescription.slice(0, 5).join(" ")}{" "}
           <span className="text-blue-500">read more...</span>
         </p>
       </div>
-    </div>
+      {/* product information container end */}
+    </main>
   );
 };
 
