@@ -78,7 +78,7 @@ export const useAddProduct = (navigate) => {
 };
 
 // mutation for delete a product
-export const useDeleteProduct = () => {
+export const useDeleteProduct = (setIsDeleting, modalOpen) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteProduct,
@@ -86,14 +86,16 @@ export const useDeleteProduct = () => {
       console.log(data);
       toast.success(`${data.title} is deleted`);
       queryClient.setQueryData(["products"], (products) => {
-        console.log(products);
         const remainingProducts = products.filter(
-          (product) => product?.id !== data.id
+          (product) => product?.id !== data?.id
         );
+        setIsDeleting(false);
+        modalOpen(false);
         return remainingProducts;
       });
     },
     onError: (error) => {
+      setIsDeleting(false);
       toast.error(`Failed to delete product: ${error.message}`);
     },
   });

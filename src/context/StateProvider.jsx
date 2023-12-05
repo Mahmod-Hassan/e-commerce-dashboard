@@ -5,7 +5,6 @@ export const StateContext = createContext();
 const StateProvider = ({ children }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [product, setProduct] = useState(null);
-
   const state = {
     modalOpen,
     setModalOpen,

@@ -1,13 +1,17 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { StateContext } from "../context/StateProvider";
 import { useDeleteProduct } from "../custorm-hooks/useProducts";
 import Loader from "./Loader";
 
 const Modal = ({ product }) => {
   const { setModalOpen } = useContext(StateContext);
-  const { mutate: deleteProduct, isLoading } = useDeleteProduct();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { mutate: deleteProductMutation } = useDeleteProduct(
+    setIsDeleting,
+    setModalOpen
+  );
 
-  if (isLoading) {
+  if (isDeleting) {
     return (
       <div className="flex justify-center items-center fixed z-50 inset-0">
         <Loader />
@@ -33,10 +37,10 @@ const Modal = ({ product }) => {
             Cancel
           </button>
           <button
-            disabled={isLoading}
+            disabled={isDeleting}
             onClick={() => {
-              setModalOpen(false);
-              deleteProduct(product?.id);
+              setIsDeleting(true);
+              deleteProductMutation(product?.id);
             }}
             className="bg-red-500 text-white px-5 py-2 rounded"
           >
