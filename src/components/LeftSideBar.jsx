@@ -5,7 +5,7 @@ const LeftSideBar = () => {
   const activeClass = "bg-black text-white";
   const inactiveClass = "bg-gray-100";
   return (
-    <aside>
+    <aside className="">
       <ul className="flex md:flex-col gap-5 text-center">
         <li>
           <Link

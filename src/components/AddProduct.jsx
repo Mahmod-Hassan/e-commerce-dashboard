@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { LuUploadCloud } from "react-icons/lu";
 import { MdErrorOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { useAddProduct } from "../custorm-hooks/useProducts";
 const AddProduct = () => {
   const [imageUrl, setImageUrl] = useState("");
-
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm();
 
@@ -19,23 +18,10 @@ const AddProduct = () => {
     const thumbnail = URL.createObjectURL(selectedFiles[0]);
     setImageUrl(thumbnail);
   };
-  // perform side effect after successfully post data
-  const onSuccess = (data) => {
-    if (data.id) {
-      toast.success("product added successfully");
-      reset();
-    }
-  };
 
-  // perform side effect after encountering an error
-  const onError = (error) => {
-    if (error) {
-      toast.error("failed to add product");
-    }
-  };
-  const { mutate: addProduct } = useAddProduct(onSuccess, onError);
-  const onSubmit = (formData) => {
-    addProduct(formData);
+  const { mutate: addProductMutation } = useAddProduct(navigate);
+  const onSubmit = async (formData) => {
+    addProductMutation(formData);
   };
 
   return (

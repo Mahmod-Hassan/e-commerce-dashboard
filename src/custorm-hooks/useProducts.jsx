@@ -1,5 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 // get product
 const fetchAllProducts = async () => {
@@ -30,6 +31,21 @@ const addProduct = async (formData) => {
   }
 };
 
+// delete product
+const deleteProduct = async (productId) => {
+  try {
+    const response = await axios.delete(
+      `https://fakestoreapi.com/products/${productId}`
+    );
+    if (response.status !== 200) {
+      throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error in deleting product: ${error.message}`);
+  }
+};
+
 // query for fetching all data
 export const useGetProducts = () => {
   return useQuery({
@@ -39,9 +55,46 @@ export const useGetProducts = () => {
 };
 
 // mutation for add a product
-export const useAddProduct = (onSuccess) => {
+export const useAddProduct = (navigate) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addProduct,
-    onSuccess,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["products"], (products) => {
+        console.log(products);
+        const updatedProducts = [...products, data];
+        return updatedProducts;
+      });
+      // if (data.id) {
+      //   navigate("/");
+      //   toast.success("product added successfully");
+      // }
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.error(`Failed to add product: ${error.message}`);
+    },
+  });
+};
+
+// mutation for delete a product
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success(`${data.title} is deleted`);
+      queryClient.setQueryData(["products"], (products) => {
+        console.log(products);
+        const remainingProducts = products.filter(
+          (product) => product?.id !== data.id
+        );
+        return remainingProducts;
+      });
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete product: ${error.message}`);
+    },
   });
 };
