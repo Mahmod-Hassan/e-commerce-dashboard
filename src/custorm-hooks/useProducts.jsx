@@ -55,7 +55,7 @@ export const useGetProducts = () => {
 };
 
 // mutation for add a product
-export const useAddProduct = (navigate) => {
+export const useAddProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addProduct,

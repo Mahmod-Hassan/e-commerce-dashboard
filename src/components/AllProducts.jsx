@@ -4,8 +4,6 @@ import ProductCard from "./ProductCard";
 
 const AllProducts = () => {
   const { data: products, isLoading, isError, error } = useGetProducts();
-  // console.log(products);
-  console.log({ isLoading, isError, error, products });
   let content = null;
   if (isLoading && !isError) {
     content = <Loader />;
