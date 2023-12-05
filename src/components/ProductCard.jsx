@@ -4,7 +4,7 @@ import { IoIosStar } from "react-icons/io";
 import { StateContext } from "../context/StateProvider";
 const ProductCard = ({ product }) => {
   // import setModalOpen from StateContext
-  const { modalOpen, setModalOpen, setProduct } = useContext(StateContext);
+  const { setModalOpen, setProduct } = useContext(StateContext);
   // destructuring from product
   const { price, image, rating, description } = product;
 
@@ -27,10 +27,11 @@ const ProductCard = ({ product }) => {
   const ratingStars = [];
   for (let i = 0; i < 5; i++) {
     const starColor =
-      i < Math.round(rating.rate) ? "text-[#FF9017]" : "text-gray-300";
+      i < Math.round(rating?.rate) ? "text-[#FF9017]" : "text-gray-300";
     ratingStars.push(<IoIosStar key={i} className={`${starColor}`} />);
   }
   const splitDescription = description.split(" ");
+  const sliceDescription = splitDescription.slice(0, 5).join(" ");
   return (
     // product main card container
     <main className="border border-gray-200 rounded flex flex-col">
@@ -40,7 +41,7 @@ const ProductCard = ({ product }) => {
       </div>
       {/* product image container end */}
 
-      {/* product information container start */}
+      {/* product details information container start*/}
       <div className="border-t p-5 h-auto bg-gray-100/25 grow">
         <div className="flex justify-between">
           <p className="text-lg font-semibold">$ {price}</p>
@@ -56,15 +57,20 @@ const ProductCard = ({ product }) => {
         </div>
         <div className="flex items-center gap-5">
           <p className="flex">{ratingStars}</p>
-          <span className="text-[#FF9017]">{rating.rate}</span>
+          <span className="text-[#FF9017]">{rating?.rate}</span>
         </div>
 
-        <p className="">
-          {splitDescription.slice(0, 5).join(" ")}{" "}
-          <span className="text-blue-500">read more...</span>
+        <p>
+          <span className="mr-2">{sliceDescription}</span>
+          <button
+            className="text-blue-500 cursor-pointer"
+            onClick={() => setShowFullDescription(true)}
+          >
+            read more...
+          </button>
         </p>
       </div>
-      {/* product information container end */}
+      {/* product details information container start*/}
     </main>
   );
 };

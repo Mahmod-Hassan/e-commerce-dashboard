@@ -1,15 +1,43 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { LuUploadCloud } from "react-icons/lu";
 import { MdErrorOutline } from "react-icons/md";
+import { useAddProduct } from "../custorm-hooks/useProducts";
 const AddProduct = () => {
+  const [imageUrl, setImageUrl] = useState("");
+
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const handleFileChange = (e) => {
+    const selectedFiles = e.target.files;
+    const thumbnail = URL.createObjectURL(selectedFiles[0]);
+    setImageUrl(thumbnail);
+  };
+  // perform side effect after successfully post data
+  const onSuccess = (data) => {
+    if (data.id) {
+      toast.success("product added successfully");
+      reset();
+    }
+  };
+
+  // perform side effect after encountering an error
+  const onError = (error) => {
+    if (error) {
+      toast.error("failed to add product");
+    }
+  };
+  const { mutate: addProduct } = useAddProduct(onSuccess, onError);
+  const onSubmit = (formData) => {
+    addProduct(formData);
+  };
+
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="divide-y">
@@ -46,6 +74,7 @@ const AddProduct = () => {
         <div className="grid p-4 grid-cols-12 relative">
           <h3 className="col-span-4 font-medium text-gray-700">Price</h3>
           <input
+            type="number"
             {...register("price", { required: true })}
             className={`border placeholder-gray-900 focus:outline-none border-gray-200 p-2 col-span-8 rounded-lg ${
               errors.title ? "border-red-500 border-2" : ""
@@ -66,43 +95,44 @@ const AddProduct = () => {
               This will display on your product
             </span>
           </div>
-          <div className="absolute top-0 right-4 md:static md:col-span-3 h-20 md:h-[179px]">
-            <img
-              className="p-5 bg-white h-full border"
-              src="https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg"
-              alt=""
-            />
-          </div>
-
-          <div className="col-span-12 md:col-span-5 lg:h-[179px]">
-            <label
-              htmlFor="file"
-              className={`cursor-pointer border placeholder-gray-900 border-gray-200 h-full bg-white flex flex-col items-center justify-center px-4 py-2 rounded-lg ${
-                errors.title ? "border-red-500 border-2" : ""
-              }`}
-            >
-              <LuUploadCloud className="w-10 h-10" />
-              <div>
-                <p>
-                  <span className="text-blue-500 font-medium">
-                    Click to upload
-                  </span>
-                  &nbsp; or drag and drop <br />
-                  SVG, PNG, JPG or GIF (max. 800x400px)
-                </p>
-              </div>
-            </label>
-            <input
-              {...register("image", { required: true })}
-              type="file"
-              id="file"
-              className="hidden"
-            />
-            {errors.image && (
-              <MdErrorOutline
-                className={`w-5 h-5 absolute top-0 right-0 text-red-500`}
+          <div className="flex justify-between col-span-12 md:col-span-8 gap-10">
+            {/* image container  */}
+            <div className="absolute top-0 right-4 md:static w-20 md:w-40 h-20 md:h-40 ">
+              <img
+                className="bg-white w-full h-full border rounded-lg"
+                src={imageUrl}
+                title="Empty"
+                alt=""
               />
-            )}
+            </div>
+
+            {/* upload image container */}
+            <div className="h-32 md:h-40 w-full md:w-auto grow">
+              <label
+                htmlFor="file"
+                className={`cursor-pointer border placeholder-gray-900 border-gray-200 h-full bg-white flex flex-col items-center justify-center px-4 py-2 rounded-lg`}
+              >
+                <LuUploadCloud className="w-10 h-10" />
+                <div>
+                  <p>
+                    <span className="text-blue-500 font-medium">
+                      Click to upload
+                    </span>
+                    &nbsp; or drag and drop <br />
+                    SVG, PNG, JPG or GIF (max. 800x400px)
+                  </p>
+                </div>
+              </label>
+              <input
+                onChange={(e) => {
+                  handleFileChange(e);
+                  register("image");
+                }}
+                type="file"
+                id="file"
+                className="hidden"
+              />
+            </div>
           </div>
         </div>
 
@@ -117,7 +147,7 @@ const AddProduct = () => {
             rows={5}
             {...register("description", { required: true })}
             className={`border placeholder-gray-500 focus:outline-none border-gray-200 p-2 col-span-8 rounded-lg ${
-              errors.title ? "border-red-500 border-2" : ""
+              errors.description ? "border-red-500 border-2" : ""
             }`}
             placeholder="Write something about your products..."
           />
