@@ -4,13 +4,18 @@ import { useDeleteProduct } from "../custorm-hooks/useProducts";
 import Loader from "./Loader";
 
 const Modal = ({ product }) => {
+  // StateContext is a context provider
+  // which provide product and modal state
   const { setModalOpen } = useContext(StateContext);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // useDeleteProduct is my custom hook
   const { mutate: deleteProductMutation } = useDeleteProduct(
     setIsDeleting,
     setModalOpen
   );
 
+  // showing a loader when product is deleting
   if (isDeleting) {
     return (
       <div className="flex justify-center items-center fixed z-50 inset-0">

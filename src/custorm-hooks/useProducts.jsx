@@ -61,17 +61,11 @@ export const useAddProduct = (navigate) => {
     mutationFn: addProduct,
     onSuccess: (data) => {
       queryClient.setQueryData(["products"], (products) => {
-        console.log(products);
         const updatedProducts = [...products, data];
         return updatedProducts;
       });
-      // if (data.id) {
-      //   navigate("/");
-      //   toast.success("product added successfully");
-      // }
     },
     onError: (error) => {
-      console.log(error);
       toast.error(`Failed to add product: ${error.message}`);
     },
   });
@@ -83,7 +77,6 @@ export const useDeleteProduct = (setIsDeleting, modalOpen) => {
   return useMutation({
     mutationFn: deleteProduct,
     onSuccess: (data) => {
-      console.log(data);
       toast.success(`${data.title} is deleted`);
       queryClient.setQueryData(["products"], (products) => {
         const remainingProducts = products.filter(

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { LuUploadCloud } from "react-icons/lu";
 import { MdErrorOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,9 @@ const AddProduct = () => {
 
   const { mutate: addProductMutation } = useAddProduct(navigate);
   const onSubmit = async (formData) => {
-    addProductMutation(formData);
+    await addProductMutation(formData);
+    navigate("/");
+    toast.success("product added successfully");
   };
 
   return (
