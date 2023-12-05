@@ -40,6 +40,9 @@ const deleteProduct = async (productId) => {
     if (response.status !== 200) {
       throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
+    if (response.status === 200 && response.data === null) {
+      return productId;
+    }
     return response.data;
   } catch (error) {
     throw new Error(`Error in deleting product: ${error.message}`);
@@ -77,14 +80,24 @@ export const useDeleteProduct = (setIsDeleting, modalOpen) => {
   return useMutation({
     mutationFn: deleteProduct,
     onSuccess: (data) => {
-      toast.success(`${data.title} is deleted`);
       queryClient.setQueryData(["products"], (products) => {
-        const remainingProducts = products.filter(
-          (product) => product?.id !== data?.id
-        );
-        setIsDeleting(false);
-        modalOpen(false);
-        return remainingProducts;
+        if (data.id) {
+          setIsDeleting(false);
+          modalOpen(false);
+          toast.success(`${data?.title} is deleted`);
+          const remainingProducts = products.filter(
+            (product) => product?.id !== data?.id
+          );
+          return remainingProducts;
+        } else {
+          setIsDeleting(false);
+          modalOpen(false);
+          toast.success(`${data} is deleted`);
+          const remainingProducts = products.filter(
+            (product) => product?.id !== data
+          );
+          return remainingProducts;
+        }
       });
     },
     onError: (error) => {
